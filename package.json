@@ -23,7 +23,10 @@
   "lint": "next lint",
   
     
-  "init-db": "node scripts/init-db.js"
+  "init-db": "node scripts/init-db.js",
+  
+    
+  "postinstall": "prisma generate"
   
   },
   
