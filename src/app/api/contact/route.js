@@ -4,10 +4,16 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
-    const { name, email, phone, message } = await req.json();
+    console.log('Contact API POST request received');
+    
+    const body = await req.json();
+    console.log('Request body:', body);
+    
+    const { name, email, phone, message } = body;
 
     // Validation
     if (!name || !email || !phone || !message) {
+      console.log('Validation failed - missing fields:', { name: !!name, email: !!email, phone: !!phone, message: !!message });
       return new Response(JSON.stringify({ 
         success: false, 
         message: "Tüm alanlar zorunludur." 
@@ -22,6 +28,7 @@ export async function POST(req) {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Email validation failed:', email);
       return new Response(JSON.stringify({ 
         success: false, 
         message: "Geçerli bir email adresi giriniz." 
@@ -33,6 +40,8 @@ export async function POST(req) {
       });
     }
 
+    console.log('Attempting to save message to database...');
+    
     // Save to database
     const contactMessage = await prisma.contactMessage.create({
       data: { 
@@ -42,6 +51,8 @@ export async function POST(req) {
         message 
       },
     });
+
+    console.log('Message saved successfully:', contactMessage);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -56,10 +67,16 @@ export async function POST(req) {
 
   } catch (error) {
     console.error('Contact API Error:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
     
     return new Response(JSON.stringify({ 
       success: false, 
-      message: "Bir hata oluştu. Lütfen tekrar deneyiniz." 
+      message: "Bir hata oluştu. Lütfen tekrar deneyiniz.",
+      error: error.message
     }), {
       status: 500,
       headers: {

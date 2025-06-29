@@ -24,4 +24,35 @@ export async function GET() {
       error: error.message 
     }, { status: 500 })
   }
+}
+
+export async function POST(req) {
+  try {
+    const body = await req.json();
+    console.log('Test API received:', body);
+    
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: "Test başarılı!",
+      receivedData: body
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error('Test API Error:', error);
+    
+    return new Response(JSON.stringify({ 
+      success: false, 
+      message: "Test hatası",
+      error: error.message
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 } 

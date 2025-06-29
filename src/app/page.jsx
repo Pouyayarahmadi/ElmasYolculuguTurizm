@@ -33,7 +33,10 @@ export default function Home() {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('/api/contact', {
+      console.log('Submitting form data:', formData);
+      
+      // Önce test API'sini deneyelim
+      const response = await fetch('/api/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,18 +44,42 @@ export default function Home() {
         body: JSON.stringify(formData),
       });
 
+      console.log('Response status:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Response data:', responseData);
+
       if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: ''
+        // Test başarılıysa gerçek API'yi deneyelim
+        const contactResponse = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
         });
+
+        console.log('Contact response status:', contactResponse.status);
+        
+        if (contactResponse.ok) {
+          setSubmitStatus('success');
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            message: ''
+          });
+        } else {
+          const contactData = await contactResponse.json();
+          console.error('Contact API failed:', contactData);
+          setSubmitStatus('error');
+        }
       } else {
+        console.error('Test API failed:', responseData);
         setSubmitStatus('error');
       }
     } catch (error) {
+      console.error('Form submission error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
