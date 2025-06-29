@@ -1,14 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Header from '@/components/Header';
-import Intro from '@/components/Intro';
 import MapSection from '@/components/MapSection';
 import { useLocale } from '../context/LocaleContext';
 
 export default function Home() {
   const { lang, setLang, content } = useLocale();
-  const [loading, setLoading] = useState(true);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -19,11 +17,6 @@ export default function Home() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
-
-  useEffect(() => {
-    // Set default rates immediately
-    setLoading(false);
-  }, []);
 
   // Form handlers
   const handleInputChange = (e) => {
@@ -64,34 +57,6 @@ export default function Home() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  if (loading) {
-    return <Intro data-intro />;
-  }
-
-  const services = {
-    tr: [
-      'Döviz Alım-Satımı',
-      'Western Union',
-      'Seyahat Biletleri',
-      'Oturma İzni Başvuruları',
-      'Otel Rezervasyonları',
-    ],
-    en: [
-      'Currency Exchange',
-      'Western Union',
-      'Travel Tickets',
-      'Residence Permit Applications',
-      'Hotel Reservations',
-    ],
-    ar: [
-      'تبديل العملات',
-      'ويسترن يونيون',
-      'تذاكر السفر',
-      'طلبات الإقامة',
-      'حجوزات الفنادق',
-    ],
   };
 
   // Form translations

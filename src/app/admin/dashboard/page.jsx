@@ -56,6 +56,22 @@ export default function AdminDashboard() {
     });
   };
 
+  const getMessageAge = (dateString) => {
+    const messageDate = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - messageDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Bugün';
+    if (diffDays === 1) return '1 gün önce';
+    return `${diffDays} gün önce`;
+  };
+
+  const isMessageDeletable = (dateString) => {
+    // Tüm mesajlar silinebilir
+    return true;
+  };
+
   const handleSelect = (id) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -72,7 +88,8 @@ export default function AdminDashboard() {
 
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) return;
-    if (!window.confirm('Seçili mesajları silmek istediğinize emin misiniz?')) return;
+    
+    if (!window.confirm('Seçili mesajları silmek istediğinize emin misiniz? (Bu işlem geri alınamaz)')) return;
     setDeleting(true);
     try {
       const res = await fetch('/api/contact', {
@@ -83,6 +100,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         setSelectedIds([]);
         fetchMessages();
+        alert('Mesajlar başarıyla silindi.');
       } else {
         alert('Silme işlemi başarısız oldu.');
       }
@@ -172,6 +190,9 @@ export default function AdminDashboard() {
                       Tarih
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Yaş
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                       Ad Soyad
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
@@ -193,10 +214,16 @@ export default function AdminDashboard() {
                           type="checkbox"
                           checked={selectedIds.includes(message.id)}
                           onChange={() => handleSelect(message.id)}
+                          title="Bu mesajı silmek için seçin"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b">
                         {formatDate(message.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm border-b">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {getMessageAge(message.createdAt)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-b">
                         {message.name}

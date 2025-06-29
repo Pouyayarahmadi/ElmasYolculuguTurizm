@@ -1,4 +1,12 @@
 const tr = {
+  header: {
+    title: 'Elmas Yolculuğu',
+    home: 'Ana Sayfa',
+    menu: 'Sayfalar',
+    hakkimizda: 'Hakkımızda',
+    hizmetler: 'Hizmetler',
+    iletisim: 'İletişim'
+  },
   home: {
     title: 'Elmas Yolculuğu Turizm',
     description: "Elmas Yolculuğu Turizm, Samsun'un Atakum ilçesinde kurulmuş güvenilir bir seyahat ve danışmanlık firmasıdır. Müşterilerimize döviz işlemleri, havale hizmetleri, otel rezervasyonları, seyahat bileti satışı yabancı uyruklular için oturma izni başvuruları......",

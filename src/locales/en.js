@@ -1,4 +1,12 @@
 const en = {
+  header: {
+    title: 'Elmas Yolculuğu',
+    home: 'Home',
+    menu: 'Pages',
+    hakkimizda: 'About Us',
+    hizmetler: 'Services',
+    iletisim: 'Contact'
+  },
   home: {
     title: 'Elmas Yolculuğu Turizm',
     description: "Elmas Yolculuğu Turizm is a reliable travel and consultancy company established in Atakum district of Samsun. We offer our customers currency exchange, money transfer services, hotel reservations, travel ticket sales residence permit applications for foreigners......",
@@ -98,14 +106,6 @@ const en = {
     readMore: 'Read More',
     contact: 'Contact Us',
     details: 'Details'
-  },
-  header: {
-    title: 'Elmas Yolculuğu',
-    home: 'Home',
-    menu: 'Pages',
-    hakkimizda: 'About Us',
-    hizmetler: 'Services',
-    iletisim: 'Contact'
   }
 };
 
