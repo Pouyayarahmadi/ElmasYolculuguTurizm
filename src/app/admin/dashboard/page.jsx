@@ -9,6 +9,8 @@ export default function AdminDashboard() {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState([]);
   const [deleting, setDeleting] = useState(false);
+  const [userLogins, setUserLogins] = useState([]);
+  const [userLoginsLoading, setUserLoginsLoading] = useState(true);
 
   useEffect(() => {
     // Check if admin is logged in (both sessionStorage and cookie)
@@ -22,6 +24,7 @@ export default function AdminDashboard() {
     
     setLoading(false);
     fetchMessages();
+    fetchUserLogins();
   }, [router]);
 
   const fetchMessages = async () => {
@@ -38,6 +41,17 @@ export default function AdminDashboard() {
     } finally {
       setMessagesLoading(false);
     }
+  };
+
+  const fetchUserLogins = async () => {
+    try {
+      const response = await fetch('/api/admin/user-logins?userLogins=1');
+      if (response.ok) {
+        const data = await response.json();
+        setUserLogins(data.data || []);
+      }
+    } catch (e) {}
+    setUserLoginsLoading(false);
   };
 
   const handleLogout = () => {
@@ -128,6 +142,12 @@ export default function AdminDashboard() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-600">Admin Dashboard</h1>
           <div className="flex gap-2">
+            <button
+              onClick={() => router.push('/admin/pages')}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+            >
+              Sayfa İçerikleri
+            </button>
             <button
               onClick={() => router.push('/')}
               className="bg-gray-200 text-blue-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
@@ -279,6 +299,33 @@ export default function AdminDashboard() {
             <li>✔ Resmi anlaşmalı şube</li>
             <li>✔ Güvenli işlem garantisi</li>
           </ul>
+        </div>
+
+        {/* Giriş Yapanlar Bölümü */}
+        <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+          <h2 className="text-xl font-semibold mb-4">Giriş Yapanlar</h2>
+          {userLoginsLoading ? (
+            <div>Yükleniyor...</div>
+          ) : userLogins.length === 0 ? (
+            <div>Henüz giriş yapan yok.</div>
+          ) : (
+            <table className="min-w-full bg-white border border-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Giriş Zamanı</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userLogins.map(login => (
+                  <tr key={login.id}>
+                    <td className="px-6 py-2 border-b">{login.email}</td>
+                    <td className="px-6 py-2 border-b">{new Date(login.loginAt).toLocaleString('tr-TR')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

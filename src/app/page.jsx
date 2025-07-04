@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Header from '@/components/Header';
 import MapSection from '@/components/MapSection';
@@ -18,6 +18,22 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
 
+  // Login state
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    const user = localStorage.getItem('userEmail');
+    if (user) {
+      setIsLoggedIn(true);
+      setUserEmail(user);
+    }
+  }, []);
+
   // Form handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,8 +51,7 @@ export default function Home() {
     try {
       console.log('Submitting form data:', formData);
       
-      // Önce test API'sini deneyelim
-      const response = await fetch('/api/test', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,32 +65,15 @@ export default function Home() {
       console.log('Response data:', responseData);
 
       if (response.ok) {
-        // Test başarılıysa gerçek API'yi deneyelim
-        const contactResponse = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: ''
         });
-
-        console.log('Contact response status:', contactResponse.status);
-        
-        if (contactResponse.ok) {
-          setSubmitStatus('success');
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            message: ''
-          });
-        } else {
-          const contactData = await contactResponse.json();
-          console.error('Contact API failed:', contactData);
-          setSubmitStatus('error');
-        }
       } else {
-        console.error('Test API failed:', responseData);
+        console.error('Form submission failed:', responseData);
         setSubmitStatus('error');
       }
     } catch (error) {
@@ -84,6 +82,27 @@ export default function Home() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    // API entegrasyonu sonraki adımda eklenecek
+    if (!loginEmail || !loginPassword) {
+      setLoginError('Email ve şifre zorunlu.');
+      return;
+    }
+    // Geçici: Her giriş başarılı kabul edilsin
+    localStorage.setItem('userEmail', loginEmail);
+    setIsLoggedIn(true);
+    setUserEmail(loginEmail);
+    setShowLogin(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userEmail');
+    setIsLoggedIn(false);
+    setUserEmail('');
   };
 
   // Form translations

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 export default function Intro() {
   useEffect(() => {
-    // Force remove loading state after 3 seconds
+    
     const timer = setTimeout(() => {
       document.body.style.overflow = 'auto';
     }, 3000);

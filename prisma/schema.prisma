@@ -37,4 +37,18 @@ model Admin {
   id       Int    @id @default(autoincrement())
   username String @unique
   password String
+}
+
+model Page {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
+model UserLogin {
+  id      Int      @id @default(autoincrement())
+  email   String
+  loginAt DateTime @default(now())
 } 
